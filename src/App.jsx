@@ -7,17 +7,19 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 
 function App() {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigate to="login" />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signUp" element={<SignUp />} />
-        <Route path="/home" element={<Home/>}/>
+        <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/login"} />} />
+        <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/home" />} />
+        <Route path="/signUp" element={!isLoggedIn ? <SignUp /> : <Navigate to="/home" />} />
+        <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/login" />} />
       </Routes>
     </>
   );
 }
+
 
 export default App;

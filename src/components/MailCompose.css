@@ -1,0 +1,58 @@
+.compose-container {
+    padding: 2rem;
+    max-width: 700px;
+    margin: auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.compose-input {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.editor-wrapper {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column-reverse;
+    /* 🪄 This is the trick! */
+}
+
+.compose-editor {
+    min-height: 200px;
+    padding: 1rem;
+    background-color: #fafafa;
+}
+
+.editor-toolbar {
+    border-top: 1px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 0 0 6px 6px;
+}
+
+.compose-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.compose-button:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+}
+
+.compose-button:hover:not(:disabled) {
+    background-color: #45a049;
+}

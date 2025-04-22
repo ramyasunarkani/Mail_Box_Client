@@ -1,0 +1,12 @@
+.mails-container{
+    display: flex;
+    flex-direction: row;
+}
+.mail-section{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
+.allmails{
+    width: 70%;
+}

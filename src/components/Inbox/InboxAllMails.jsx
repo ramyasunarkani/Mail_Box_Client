@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
-import './InboxAllMails.css'; // Style as needed
+import './InboxAllMails.css';
 
 const InboxAllMails = ({ userEmail }) => {
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEmail, setSelectedEmail] = useState(null);
 
   const baseURL = 'https://mail-box-client-a261b-default-rtdb.firebaseio.com';
 
@@ -37,6 +38,14 @@ const InboxAllMails = ({ userEmail }) => {
     fetchEmails();
   }, [userEmail]);
 
+  const handleEmailClick = (email) => {
+    setSelectedEmail(email);
+  };
+
+  const handleBack = () => {
+    setSelectedEmail(null);
+  };
+
   if (!userEmail) {
     return <p>Error: No user email provided.</p>;
   }
@@ -46,34 +55,46 @@ const InboxAllMails = ({ userEmail }) => {
       <h2>Your Inbox</h2>
       {loading ? (
         <p>Loading mails...</p>
+      ) : selectedEmail ? (
+        <div className="email-detail">
+          <button onClick={handleBack} className="back-button">← Back</button>
+          <h3>{selectedEmail.subject}</h3>
+          <p><strong>From:</strong> {selectedEmail.from}</p>
+          <p><strong>Date:</strong> {new Date(selectedEmail.timestamp).toLocaleString()}</p>
+          <div
+            className="email-body"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(selectedEmail.body),
+            }}
+          />
+        </div>
       ) : emails.length === 0 ? (
         <p>No mails found.</p>
       ) : (
-        <ul className="email-list">
-          {emails.map(({ id, from, subject, body, timestamp }) => (
-            <li key={id} className="email-item">
-              <div className="email-header">
-                 {from}{'   '}
-              <span className="email-date">
-                {new Date(timestamp).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-              </div>
-              <div className="email-subject">
-                {subject}
-              </div>
-              {/* <div
-                className="email-body"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(body),
-                }}
-              /> */}
-            </li>
-          ))}
-        </ul>
+<ul className="email-list">
+  {emails.map((email) => {
+    const isShortSubject = email.subject.length < 20;
+    const previewText = isShortSubject && email.body
+      ? `${email.subject} - ${email.body.slice(0, 50)}${email.body.length > 50 ? '...' : ''}`
+      : email.subject;
+
+    return (
+      <li key={email.id} className="email-item" onClick={() => handleEmailClick(email)}>
+        <div className="email-header">
+          {email.from}
+          <span className="email-date">
+            {new Date(email.timestamp).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </span>
+        </div>
+        <div className="email-preview-single-line">{previewText}</div>
+      </li>
+    );
+  })}
+</ul>
       )}
     </div>
   );

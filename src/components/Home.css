@@ -1,0 +1,31 @@
+.home-container {
+    text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+    margin: auto;
+}
+
+.go-to-mails-btn {
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.advice-section {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.advice-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.advice-section li {
+    margin: 10px 0;
+}

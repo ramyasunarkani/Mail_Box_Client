@@ -56,7 +56,7 @@ function App() {
                 <Route path="/signUp" element={!isLoggedIn ? <SignUp /> : <Navigate to="/home" />} />
                 
                 {/* Home route is accessible only if the user is logged in */}
-                <Route path="/home" element={isLoggedIn ? <Inbox /> : <Navigate to="/login" />} />
+                <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/login" />} />
             </Routes>
         </>
     );

@@ -2,7 +2,25 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div className="home-container">
+  <h1>Welcome to Mail Box Client</h1>
+  <p>Your private, minimal, and secure mailbox system.</p>
+
+  <button onClick={() => navigate('/inbox')} className="go-to-mails-btn">
+    Click here to go to Mails Section
+  </button>
+
+  <div className="advice-section">
+    <h3> Tips to Get Started</h3>
+    <ul>
+      <li>Use "Compose" to send a new message</li>
+      <li> "Inbox" shows all received messages</li>
+      <li>Mark emails as read to stay organized</li>
+      <li>Your emails are securely stored using Firebase</li>
+    </ul>
+  </div>
+</div>
+
   )
 }
 

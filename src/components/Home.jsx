@@ -3,7 +3,8 @@ import React from 'react'
 const Home = () => {
   return (
     <div className="home-container">
-  <h1>Welcome to Mail Box Client</h1>
+  
+<img src="/welocome.png" alt="image" width="200" height="200" />
   <p>Your private, minimal, and secure mailbox system.</p>
 
   <button onClick={() => navigate('/inbox')} className="go-to-mails-btn">

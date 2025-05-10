@@ -1,12 +1,55 @@
-.mails-container{
+.inbox-container {
+    padding: 0.5rem;
+}
+
+.mail-preview {
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem;
+    text-decoration: none;
+    color: black;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.mail-preview:hover {
+    background-color: #f0f0f0;
+}
+
+.mail-detail {
+    padding: 1rem;
+}
+
+.mail-body {
+    margin-top: 1rem;
+    background: #fafafa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+.preview-header{
+  display: flex;
+  justify-content: space-between;
+}
+.blue-dot {
+    display: inline-block;
+    width:6px;
+    height: 6px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+  }
+  .delete-btn{
+    border: none;
+    background-color: transparent;
+    margin-left: 3rem;
+  }
+  .mail-buttons{
     display: flex;
-    flex-direction: row;
-}
-.mail-section{
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-}
-.allmails{
-    width: 70%;
-}
+justify-content: space-between;
+margin-bottom: 1rem;
+  }
+ .mail-buttons button{
+    border: none;
+    background-color: transparent;
+
+  }
+  

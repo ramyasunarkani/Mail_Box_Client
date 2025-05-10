@@ -1,104 +1,96 @@
 import React, { useRef, useState } from 'react';
-import { Container, Form, Button, Card, InputGroup } from 'react-bootstrap';
-import './Login.css';
-import { useNavigate } from 'react-router-dom';
+import { RiEyeCloseLine } from "react-icons/ri";
+import { BsEye } from "react-icons/bs";
+import './Auth.css';
 import axios from 'axios';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { authActions } from '../../Store/auth';
 
 const Login = () => {
-  const dispatch=useDispatch();
-  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const from = location.state?.from?.pathname || '/';
 
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const enteredEmail = emailRef.current.value;
+    const enteredPassword = passwordRef.current.value;
 
-  async function submitHandler(event) {
-    event.preventDefault();
+    if (!enteredEmail || !enteredPassword) {
+      alert("Please enter both email and password.");
+      return;
+    }
 
-    const EnteredEmail = emailRef.current.value;
-    const EnteredPassword = passwordRef.current.value;
-
+    setLoading(true);
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC6sE4ze0XmP0y0piOxaqTdvkzkxiiYdis',
         {
-          email: EnteredEmail,
-          password: EnteredPassword,
+          email: enteredEmail,
+          password: enteredPassword,
           returnSecureToken: true,
         }
       );
 
-      console.log('Login Success ✅:', response.data);
-      dispatch(authActions.login({token: response.data.idToken}))
+      dispatch(authActions.login({
+        token: res.data.idToken,
+        name: res.data.displayName,  
+        email: enteredEmail,
+        }));
 
-      navigate('/home');
       emailRef.current.value = '';
       passwordRef.current.value = '';
+      navigate('from');
     } catch (error) {
-      console.error(error.response?.data?.error?.message || error.message);
-      alert(error.response?.data?.error?.message || 'Authentication failed!');
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.error &&
+        error.response.data.error.message
+      ) {
+        alert(`Login Failed: ${error.response.data.error.message}`);
+      } else {
+        alert(`An unexpected error occurred: ${error.message}`);
+      }
+    } finally {
+      setLoading(false); 
     }
-  }
+  };
 
   return (
-    <div className="main-wrapper">
-      <div className="curve-shape"></div>
-      <Container className="d-flex justify-content-center align-items-center vh-100">
-        <Card className="p-4 login-card">
-          <h4 className="text-center mb-3">Login</h4>
-          <Form onSubmit={submitHandler}>
-            
-            <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter your email"
-                ref={emailRef}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <InputGroup>
-                <Form.Control
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
-                  ref={passwordRef}
-                  required
-                />
-                <Button
-                  variant="outline-secondary"
-                  onClick={togglePasswordVisibility}
-                  tabIndex={-1}
-                  title={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </Button>
-              </InputGroup>
-            </Form.Group>
-
-            <Button type="submit" className="w-100 mb-2" variant="primary">
-              Login
-            </Button>
-
-            <Button
-              type="button"
-              variant="light"
-              className="w-100 border"
-              onClick={() => navigate('/signUp')}
-            >
-              Don't have an account? Sign Up
-            </Button>
-          </Form>
-        </Card>
-      </Container>
+    <div className="auth-container">
+      <div className='auth-heading'>
+      <h2>Please Login Here!</h2>
+        
+      </div>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Enter Email"
+          ref={emailRef}
+          required
+        />
+        <div className="password-field">
+          <input
+            type={show ? 'text' : 'password'}
+            placeholder="Enter Password"
+            ref={passwordRef}
+            required
+          />
+          <span onClick={() => setShow(!show)} className="eye-icon">
+            {show ? <BsEye /> : <RiEyeCloseLine />}
+          </span>
+        </div>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Signing In...' : 'Sign In'}
+        </button>
+      </form>
+      <button onClick={() => navigate('/signup')}>New User? <span>SignUp</span></button>
     </div>
   );
 };

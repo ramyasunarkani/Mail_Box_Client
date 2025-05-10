@@ -1,73 +1,128 @@
-import React, { useRef } from 'react';
-import { Container, Form, Button, Card, FloatingLabel } from 'react-bootstrap';
-import './SignUp.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { RiEyeCloseLine } from "react-icons/ri";
+import { BsEye } from "react-icons/bs";
+import './Auth.css';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../Store/auth';
 
 const SignUp = () => {
-  const navigate=useNavigate();
-  const emailRef=useRef(null);
-  const passwordRef=useRef(null);
-  const cpassRef=useRef(null);
-  
-  function submitHandler(event){
-    event.preventDefault();
-    const enteredEmail=emailRef.current.value;
-    const enteredPass=passwordRef.current.value;
-    const enteredCofPass=cpassRef.current.value;
-    if(enteredPass !== enteredCofPass){
-      alert('Password not Match');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmRef = useRef(null);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const enteredName = nameRef.current.value;
+    const enteredEmail = emailRef.current.value;
+    const enteredPassword = passwordRef.current.value;
+    const confirmedPassword = confirmRef.current.value;
+
+    if (!enteredName || !enteredEmail || !enteredPassword || !confirmedPassword) {
+      alert("All fields are required.");
       return;
     }
-    try{
-      const res=axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC6sE4ze0XmP0y0piOxaqTdvkzkxiiYdis',{
-        email:enteredEmail,
-        password:enteredPass,
-        returnSecureToken:'true'
-      })
-      emailRef.current.value='';
-      passwordRef.current.value='';
-      cpassRef.current.value='';
+
+    if (enteredPassword !== confirmedPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Sign up user
+      const res = await axios.post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC6sE4ze0XmP0y0piOxaqTdvkzkxiiYdis',
+        {
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true,
+        }
+      );
+
+      const idToken = res.data.idToken;
+      console.log(res.data)
+
+      await axios.post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyC6sE4ze0XmP0y0piOxaqTdvkzkxiiYdis',
+        {
+          idToken: idToken,
+          displayName: enteredName,
+          returnSecureToken: false,
+        }
+      );
+
+      dispatch(authActions.login(idToken));
       navigate('/login');
-      
+    } catch (error) {
+      const msg =
+        error?.response?.data?.error?.message || "Something went wrong!";
+      alert(`Sign Up Failed: ${msg}`);
+    } finally {
+      setLoading(false);
     }
-    catch(error){
-      console.error( error.response?.data?.error?.message || error.message);
-    alert(error.response?.data?.error?.message || 'SignUp failed!');
-
-    }
-
-
-  }
+  };
 
   return (
-    <div className="main-wrapper">
-      <div className="curve-shape"></div>
-      <Container className="d-flex justify-content-center align-items-center vh-100">
-        <Card className="p-4 signup-card">
-          <h4 className="text-center mb-3">SignUp</h4>
-          <Form onSubmit={submitHandler}>
-            <FloatingLabel controlId="floatingInput" label="Email address" className="mb-3">
-              <Form.Control type="email" placeholder="Email" ref={emailRef} required/>
-            </FloatingLabel>
-            <FloatingLabel controlId="floatingPassword" label="Password" className="mb-3">
-              <Form.Control type="password" placeholder="Password" ref={passwordRef}/>
-            </FloatingLabel>
-            <FloatingLabel controlId="floatingCpassword" label="Confirm Password" className="mb-3">
-              <Form.Control type="password" placeholder="Confirm Password" ref={cpassRef}/>
-            </FloatingLabel>
-            <Button type='submit' className="w-100 mb-2" variant="primary">
-              Sign up
-            </Button>
-            <Button variant="light" className="w-100 border"
-            onClick={()=>navigate('/login')}
-            >
-              Have an account? Login
-            </Button>
-          </Form>
-        </Card>
-      </Container>
+    <div className="auth-container">
+      <div className="auth-heading">
+        <h2>Create Your Account</h2>
+      </div>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter Name"
+          ref={nameRef}
+          required
+        />
+        <input
+          type="email"
+          placeholder="Enter Email"
+          ref={emailRef}
+          required
+        />
+
+        <div className="password-field">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Enter Password"
+            ref={passwordRef}
+            required
+          />
+          <span onClick={() => setShowPassword(!showPassword)} className="eye-icon">
+            {showPassword ? <BsEye /> : <RiEyeCloseLine />}
+          </span>
+        </div>
+
+        <div className="password-field">
+          <input
+            type={showConfirm ? 'text' : 'password'}
+            placeholder="Confirm Password"
+            ref={confirmRef}
+            required
+          />
+          <span onClick={() => setShowConfirm(!showConfirm)} className="eye-icon">
+            {showConfirm ? <BsEye /> : <RiEyeCloseLine />}
+          </span>
+        </div>
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Signing Up...' : 'Sign Up'}
+        </button>
+      </form>
+
+      <button onClick={() => navigate('/login')}>
+        Already a user? <span>Sign In</span>
+      </button>
     </div>
   );
 };

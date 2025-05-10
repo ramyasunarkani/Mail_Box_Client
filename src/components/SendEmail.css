@@ -1,28 +1,53 @@
 .compose-container {
-    padding: 2rem;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem;
     max-width: 700px;
-    margin: auto;
+    width: 60%;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    display: none;
 }
 
+.compose-container.open {
+    display: block;
+}
+.header {
+    display: flex;
+    padding: 0.5rem 1rem;
+    background-color: #F2F6FC;
+    align-items: center;
+    justify-content: space-between;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+}
+
+.close-btn {
+    padding: 0.5rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+    background-color: #e2e8f0;
+}
 .compose-input {
     width: 100%;
-    margin-bottom: 1rem;
+    display: block;
+    margin-bottom: 0.4rem;
     padding: 0.5rem 0.75rem;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+    border: none;
+    border-bottom:1px solid #c9c7c7;
 }
 
 .editor-wrapper {
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    margin-bottom: 1rem;
     display: flex;
     flex-direction: column-reverse;
-    /* 🪄 This is the trick! */
 }
 
 .compose-editor {
@@ -40,9 +65,10 @@
 .compose-button {
     background-color: #4caf50;
     color: white;
-    padding: 0.7rem 1.5rem;
     border: none;
     border-radius: 4px;
+    padding-left: 15px;
+    padding-right: 15px;
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;

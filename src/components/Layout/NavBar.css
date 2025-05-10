@@ -1,0 +1,83 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background-color: #4f46e5;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid gray;
+}
+
+.navbar-left h2 {
+    margin: 0;
+    color: #fff;
+    font-family: cursive;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-center {
+    flex-grow: 1;
+    padding: 0 20px;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+}
+
+.navbar-right .profile-icon {
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+.profile-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 24px;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 8px;
+    padding: 12px;
+    width: 180px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.profile-dropdown .username {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.profile-dropdown button {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+}
+
+.profile-dropdown button:hover {
+    background-color: #3730a3;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,65 +1,58 @@
-import React, { useEffect } from 'react';
-import './App.css';
+import React, { useEffect } from 'react'; // <- Add useEffect
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
-import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
-import MailCompose from './components/MailCompose';
-import { authActions } from './Store/auth';
+import MailBox from './components/MailBox';
 import Inbox from './components/Inbox/Inbox';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchInboxEmails, fetchSentEmails } from './Store/mailActions'; // <- Import action
+import MailDetail from './components/Inbox/MailDetail';
+import SentItems from './components/SentItems';
+import SentMailDetail from './components/SentMailDetail';
 
-function App() {
-    const dispatch = useDispatch();
-    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+const App = () => {
+  const dispatch = useDispatch(); // <- Add dispatch
+  const userLogged = useSelector((state) => state.auth.userLogged);
+  const userEmail = useSelector((state) => state.auth.userEmail); 
 
-    useEffect(() => {
-        let timeout;
+  useEffect(() => {
+    let intervalId;
 
-        const resetTimeout = () => {
-            if (isLoggedIn) {
-                // Set timeout for 5 minutes of inactivity
-                timeout = setTimeout(() => {
-                    dispatch(authActions.logout());  // Dispatch logout action
-                }, 5 * 60 * 1000);  // 5 minutes in milliseconds
-            }
-        };
+    if (userEmail) {
+      // Initial fetch
+      dispatch(fetchInboxEmails(userEmail));
+      dispatch(fetchSentEmails(userEmail));
 
-        // Reset timeout when user interacts
-        const handleUserActivity = () => {
-            clearTimeout(timeout);
-            resetTimeout();  // Restart the timer when user interacts
-        };
+      // Polling every 2 seconds
+      intervalId = setInterval(() => {
+        dispatch(fetchInboxEmails(userEmail));
+        dispatch(fetchSentEmails(userEmail));
+      }, 2000);
+    }
 
-        // Attach event listeners for user activity
-        window.addEventListener('mousemove', handleUserActivity);
-        window.addEventListener('keypress', handleUserActivity);
+    // Cleanup on unmount or user logout
+    return () => clearInterval(intervalId);
+  }, [dispatch, userEmail]);
 
-        resetTimeout();  // Initialize the timeout
+  return (
+    <Routes>
+      <Route path="/login" element={userLogged ? <Navigate to="/" /> : <Login />} />
+      <Route path="/signup" element={userLogged ? <Navigate to="/" /> : <SignUp />} />
+      <Route path="/" element={userLogged ? <Home /> : <Navigate to="/login" />} />
 
-        // Cleanup event listeners when the component unmounts
-        return () => {
-            window.removeEventListener('mousemove', handleUserActivity);
-            window.removeEventListener('keypress', handleUserActivity);
-            clearTimeout(timeout);  // Clear timeout on cleanup
-        };
-    }, [dispatch, isLoggedIn]);
-
-    return (
-        <>
-            <Routes>
-                {/* Redirect to home if logged in, otherwise to login */}
-                <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/login"} />} />
-                
-                {/* Conditional rendering of login and signup */}
-                <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/home" />} />
-                <Route path="/signUp" element={!isLoggedIn ? <SignUp /> : <Navigate to="/home" />} />
-                
-                {/* Home route is accessible only if the user is logged in */}
-                <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/login" />} />
-            </Routes>
-        </>
-    );
-}
+      {userLogged && (
+        <Route path="/mail-box" element={<MailBox />}>
+          <Route index element={<Navigate to="inbox" />} />
+          <Route path="inbox" element={<Inbox />} />
+          <Route path="inbox/:mailId" element={<MailDetail />} /> {/* <- Add MailDetail route */}
+          <Route path="sent" element={<SentItems />} />
+          <Route path="sent/:mailId" element={<SentMailDetail />} />
+        </Route>
+      )}
+      {!userLogged && <Route path="*" element={<Navigate to="/login" />} />}
+    </Routes>
+  );
+};
 
 export default App;

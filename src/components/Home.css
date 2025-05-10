@@ -1,31 +1,58 @@
 .home-container {
-    text-align: center;
-    padding: 2rem;
     max-width: 600px;
-    margin: auto;
+    margin: 15px auto;
+    padding: 30px;
+    background-color: #f9f9ff;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.home-image {
+    width: 200px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.home-description {
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 25px;
 }
 
 .go-to-mails-btn {
-    padding: 12px 24px;
-    background-color: #007bff;
+    background-color: #4f46e5;
     color: white;
-    font-weight: bold;
+    padding: 12px 24px;
     border: none;
     border-radius: 8px;
-    margin: 20px 0;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.go-to-mails-btn:hover {
+    background-color: #3730a3;
 }
 
 .advice-section {
+    margin-top: 15px;
     text-align: left;
-    margin-top: 20px;
+}
+
+.advice-section h3 {
+    color: #333;
+    margin-bottom: 10px;
 }
 
 .advice-section ul {
-    list-style: none;
-    padding: 0;
+    list-style-type: disc;
+    padding-left: 15px;
+    color: #555;
 }
 
 .advice-section li {
-    margin: 10px 0;
+    margin-bottom: 8px;
 }

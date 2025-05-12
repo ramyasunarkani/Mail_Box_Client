@@ -16,20 +16,6 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-center {
-    flex-grow: 1;
-    padding: 0 20px;
-}
-
-.search-input {
-    width: 100%;
-    max-width: 400px;
-    padding: 8px 14px;
-    border-radius: 6px;
-    border: none;
-    font-size: 1rem;
-    outline: none;
-}
 
 .navbar-right .profile-icon {
     font-size: 1.8rem;

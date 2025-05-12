@@ -23,11 +23,7 @@ const NavBar = () => {
       <div className="navbar-left">
         <h2>MailBoxClient</h2>
       </div>
-
-      <div className="navbar-center">
-        <input type="text" placeholder="Search mails..." className="search-input" />
-      </div>
-
+      
       <div className="navbar-right">
         <FaUserCircle className="profile-icon" onClick={handleProfileClick} />
 
